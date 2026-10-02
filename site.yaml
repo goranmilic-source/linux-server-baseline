@@ -1,0 +1,6 @@
+- name: Linux server baseline
+  hosts: baseline
+  become: true
+  tasks:
+    - name: Confirm connection
+      ansible.builtin.ping:

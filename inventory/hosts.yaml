@@ -1,0 +1,7 @@
+all:
+  children:
+    baseline: # name of the group
+      hosts:
+        ubuntu-host: # The name og the host
+          ansible_host: ubuntu-host
+          ansible_user: "ubuntu"
