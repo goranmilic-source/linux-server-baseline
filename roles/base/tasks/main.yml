@@ -1,3 +1,41 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for base
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600 # If list is older than an hour.
+
+- name: Upgrade installed packages
+  ansible.builtin.apt:
+    upgrade: safe # Upgrades packages but never removes anything to do it. That's the cautious choice for servers.
+    # The alternative, dist, can remove packages to solve conflicts.
+
+- name: Install essential packages
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ base_timezone }}"
+
+- name: Install unattended-upgrades
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+
+# Tells the OS to check and update the packages ever 1 hour.
+- name: Enable automatic security updates
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure unattended-upgrades service is running
+  ansible.builtin.service:
+    name: unattended-upgrades
+    state: started
+    enabled: true
