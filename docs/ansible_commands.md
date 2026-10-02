@@ -18,17 +18,28 @@
 ## Send a command, "uptime", or any other command to all systems in the "baseline" group.
     cmd: ansible baseling -m command -a "uptime"
 
-## -m = MODULE_NAME
-## -M = MODULE_PATH
-## To list all installed modules that are supported by -m run:
+-m = MODULE_NAME
+-M = MODULE_PATH
+To list all installed modules that are supported by -m run:
     cmd: ansible-doc -l
 
-## -a stands for argument.
+-a stands for argument.
+
 
 # Acquires information about a host managed by ansible:
     cmd: ansible ubuntu-host -m setup -a "filter=ansible_distribution*"
 
+# Check the syntax of your playbook
+    cmd: ansible-playbook site.yml --syntax-check
 
+should return: playbook: site.yaml
+
+# Check what the role will change on the destination server(s)
+    cmd: ansible-playbook site.yml --check --diff -K
+
+--check = dry run
+--diff = show exactly which lines in files would change
+-K = ask for your sudo password
 
 # Supporting Linux Commands:
 ## Create an SSH key pair to connect to the system(s).

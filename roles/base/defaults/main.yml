@@ -1,3 +1,14 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# defaults file for base
+# Packages every server gets
+base_packages:
+  - curl
+  - wget
+  - vim
+  - htop
+  - git
+  - unzip
+  - ca-certificates
+  - bash-completion
+
+# Timezone for the server
+base_timezone: "Europe/Belgrade"
