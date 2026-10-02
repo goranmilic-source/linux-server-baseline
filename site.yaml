@@ -4,3 +4,12 @@
   tasks:
     - name: Confirm connection
       ansible.builtin.ping:
+
+    - name: Show which user runs the task(s)
+      ansible.builtin.command: whoami
+      register: who
+      changed_when: false
+
+    - name: Print it
+      ansible.builtin.debug:
+        var: who.stdout
