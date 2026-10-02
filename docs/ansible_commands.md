@@ -36,5 +36,3 @@
 
 ## SSH Copy the key to the remote system (Linux only)
     cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
-
-
