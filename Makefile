@@ -24,3 +24,6 @@ test: ## Run tests with Pytest
 
 check: ## Runs the pre-commit checks for astethics and git leaks.
 	pre-commit run --all-files
+
+deploy: ## Runs the Ansible playbook that checks the availability of servers.
+	ansible-playbook site.yaml -K
