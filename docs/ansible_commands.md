@@ -54,3 +54,14 @@ should return: playbook: site.yaml
     -t = type of key - algorythm used
     -C = Comment to add to key
     -f = output file & location of key
+
+# Supporting Git Commands:
+## List the git files that git is keeping track of:
+    cmd: git ls-files <file.pattern>
+
+## Shows the log output:
+    cmd: git log --oneline gmdevops/main..template
+    cmd: git log --all --oneline -- roles/users/files/
+
+## Check if the file matches the .gitignore list
+    cmd: git check-ignore -v /path/to/fil/private.key /path/to/fil/public.pub
