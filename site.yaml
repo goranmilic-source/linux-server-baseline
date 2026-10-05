@@ -3,6 +3,7 @@
   become: true
   roles:
     - base
+    - users
 
   tasks:
     - name: Confirm connection
