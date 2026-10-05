@@ -47,3 +47,10 @@ should return: playbook: site.yaml
 
 ## SSH Copy the key to the remote system (Linux only)
     cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
+
+## SSH Keygen example:
+    cmd: ssh-keygen -t ed25519 -C "email@address.what" -f ~/.ssh/<key_name>
+
+    -t = type of key - algorythm used
+    -C = Comment to add to key
+    -f = output file & location of key

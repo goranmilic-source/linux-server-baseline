@@ -1,3 +1,17 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# defaults file for users
+# Group that receives the sudo rights
+users_admin_group: opsadmins
+
+# List of admin users to be created on all servers that are managed by Ansible
+users_admins:
+  - name: leeroy
+    comment: "Senior Operations Administrator."
+    ssh_key: leeroy_ed25519.pub # gitleaks:allow
+
+  - name: jenkins
+    comment: "New ops admin. Rushes into Things."
+    ssh_key: jenkins_ed25519.pub # gitleaks:allow
+
+  - name: steve
+    comment: "Steve is a good guy."
+    ssh_key: steve_ed25519.pub # gitleaks:allow

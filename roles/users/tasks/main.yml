@@ -1,3 +1,36 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for users
+- name: Create admin group
+  ansible.builtin.group:
+    name: "{{ users_admin_group }}"
+    state: present
+
+- name: Create admin users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    comment: "{{ item.comment }}"
+    shell: /bin/bash
+    groups: "{{ users_admin_group }}"
+    append: true  # appends the group to the user. Without this it will replace all groups with this one.
+    create_home: true
+    state: present
+  loop: "{{ users_admins }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Install SSH Keys for admin users
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', item.ssh_key) }}"
+    state: present
+  loop: "{{ users_admins }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Grant sudo to admin group
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/{{ users_admin_group }}"
+    content: "%{{ users_admin_group }} ALL=(ALL:ALL) NOPASSWD: ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
