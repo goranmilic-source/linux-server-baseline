@@ -22,3 +22,9 @@ This is something that should be scripted to happen automatically. Can it be don
 Check the commands section for the Ansible command which will remove the port.
 
 I have added a "remove section" that will run after the add rule removin all unnecessary ports. This ensures that no lingering, unused, ports remain.
+
+
+# Entry 3:
+## Fail2Ban
+If you have any changes to the configuration files, such as lines added or removed to the files, simply RELOADING the service does not pick up those new changes.
+Instead, you have to RESTART the service for the files to be re-read and applied.

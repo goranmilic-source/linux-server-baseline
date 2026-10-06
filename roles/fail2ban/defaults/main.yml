@@ -1,3 +1,15 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# defaults file for fail2ban
+# How long a ban lasts (m = minutes, h = hours, d = days)
+fail2ban_bantime: "10m"
+
+# Window in which failures are counted
+fail2ban_findtime: "10m"
+
+# Failures allowed within findtime before a ban
+fail2ban_maxretry: 3
+
+# Addresses that must never be banned
+fail2ban_ignore_ips:
+  - 127.0.0.1/8
+  - "::1"
+  - 184.217.96.114/16
