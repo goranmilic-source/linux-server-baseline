@@ -21,4 +21,4 @@ This is something that should be scripted to happen automatically. Can it be don
 
 Check the commands section for the Ansible command which will remove the port.
 
-I have added a "reset rule" that will run every time, removin all ports and re-adding only the required ones. This ensures that no lingering, unused, ports remain.
+I have added a "remove section" that will run after the add rule removin all unnecessary ports. This ensures that no lingering, unused, ports remain.
