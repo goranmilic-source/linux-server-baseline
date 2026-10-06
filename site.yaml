@@ -6,6 +6,7 @@
     - users
     - ssh
     - firewall
+    - fail2ban
 
   tasks:
     - name: Confirm connection

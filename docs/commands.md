@@ -73,3 +73,31 @@ playbook: site.yaml = All is well.
 
 ## SSH Copy the key to the remote system (Linux only)
     cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
+
+
+# Fail 2 Ban
+## Blocks the IP address of the attacker.
+How it works:
+    jail.conf  →  jail.d/*.conf  →  jail.local  →  jail.d/*.local
+    (defaults)    (Ubuntu's tweaks)  (YOUR file)
+
+Never edit the jail.conf file as it gets auto updated by package upgrades. Any changes you put in the jaul.conf are at risk of being automatically overwritten.
+
+Add any addresses you never want banned into the fail2ban_ignore_ips: section.
+
+## Check what is being monitored
+    cmd: sudo fail2ban-client status
+    cmd: sudo fail2ban-client status <service_name>
+
+## Unbanning
+    Specific IP address:
+    cmd: sudo fail2ban-client set sshd unbanip <ipaddress_to_unban>
+
+    Unban all:
+    cmd: sudo fail2ban-client unban --all
+
+
+# GM Notes
+    A noteworthy pattern is that: Whenever you have to owerwrive a configuration file from a third party software you would use the "templates" folder and Jinja2 Tamplating.
+
+    Look into how accurate the above really is.
