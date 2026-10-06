@@ -36,7 +36,8 @@ Sets the defaults for the ansible environment
         - vars
             --
 
-
+## Remove a ufw firewall rule
+    cmd: ansible <host-name> -m community.general.ufw -a "rule=allow port=8080 proto=tcp delete=true" --become -K
 
 ## Run a command on the remote machine:
     cmd: ansible baseline -m command -a "uptime"

@@ -5,6 +5,7 @@
     - base
     - users
     - ssh
+    - firewall
 
   tasks:
     - name: Confirm connection
