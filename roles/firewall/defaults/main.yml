@@ -9,17 +9,22 @@ firewall_ssh_logging: "medium"
 #     - port: 443
 #       proto: tcp
 #       comment: "HTTPS"
-firewall_allowed_ports:
-  - port: 80
-    proto: tcp
-    comment: "HTTP"
 
+firewall_allowed_ports:
   - port: 443
     proto: tcp
     comment: "HTTPS"
 
+# How much ufw logs: off, low, medium, high, full
+firewall_logging: "low"
+
+# To remove a port CUT AND PASTE from the "firewall_allowed_ports" and paste it below.
+# In the comments section, add the reason why the port was closed.
+firewall_removed_ports:
+  - port: 80
+    proto: tcp
+    comment: "HTTP"
+
   - port: 8080
     proto: tcp
     comment: "Dev Web"
-# How much ufw logs: off, low, medium, high, full
-firewall_logging: "low"
