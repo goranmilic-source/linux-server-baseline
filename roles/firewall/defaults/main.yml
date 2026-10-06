@@ -1,3 +1,25 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# defaults file for firewall
+# SSH port that must always stay open
+firewall_ssh_port: 22
+
+firewall_ssh_logging: "medium"
+# Extra ports to open. Each item: port (required), proto (tcp/udp, default tcp), comment.
+# Example:
+#   firewall_allowed_ports:
+#     - port: 443
+#       proto: tcp
+#       comment: "HTTPS"
+firewall_allowed_ports:
+  - port: 80
+    proto: tcp
+    comment: "HTTP"
+
+  - port: 443
+    proto: tcp
+    comment: "HTTPS"
+
+  - port: 8080
+    proto: tcp
+    comment: "Dev Web"
+# How much ufw logs: off, low, medium, high, full
+firewall_logging: "low"
