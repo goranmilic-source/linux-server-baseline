@@ -1,3 +1,9 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for healthcheck
+
+- name: Copy Health Script to Host
+  ansible.builtin.copy:
+    src: healthcheck.sh
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 500
