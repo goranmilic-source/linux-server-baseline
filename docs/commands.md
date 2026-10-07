@@ -75,7 +75,7 @@ playbook: site.yaml = All is well.
     cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
 
 
-# Fail 2 Ban
+# Fail2Ban
 ## Blocks the IP address of the attacker.
 How it works:
     jail.conf  →  jail.d/*.conf  →  jail.local  →  jail.d/*.local
@@ -95,6 +95,31 @@ Add any addresses you never want banned into the fail2ban_ignore_ips: section.
 
     Unban all:
     cmd: sudo fail2ban-client unban --all
+
+
+# Scripting in Linux
+Strict mode, making Bash fail loudly.
+By default, Bash carries on after errors, which can turn a broken check into a false "OK". Professional scripts start with:
+
+    cmd: set -Eeuo pipefail
+    Flag	    Meaning	Protects against
+    -e	        Stop when a command fails	Carrying on with bad data
+    -u	        Stop when using an unset variable	Typos in variable names
+    -E	        Error handling also applies inside functions	Errors inside functions slipping
+    -o pipefail	    A pipeline fails if any part fails	broken_command | tail looking successful because tail workedpast the trap.
+
+And a trap, which says "if anything fails unexpectedly, run this first":
+
+    cmd: trap 'echo "UNKNOWN: healthcheck failed on line ${LINENO}" >&2; exit 3' ERR
+
+So if the script itself breaks, it exits with 3 (UNKNOWN) instead of a misleading result.
+
+## Checking the syntax and Dry Runs
+    cmd: bash -n roles/healthcheck/files/healthcheck.sh
+        bash -n reads the script for syntax errors without running anything.
+
+    cmd: shellcheck roles/healthcheck/files/healthcheck.sh
+        shellcheck looks for bugs and risky patterns.
 
 
 # GM Notes
