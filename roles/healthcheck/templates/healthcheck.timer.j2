@@ -1,0 +1,9 @@
+[Unit]
+Description=Run the server health check on a schedule
+
+[Timer]
+OnCalendar={{ healthcheck_schedule }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

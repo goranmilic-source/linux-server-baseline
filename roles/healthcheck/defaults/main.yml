@@ -1,0 +1,17 @@
+---
+# When the health check runs (systemd OnCalendar format)
+healthcheck_schedule: "*:0/5"
+
+# Thresholds passed to the script (percent)
+healthcheck_disk_warn: 80
+healthcheck_disk_crit: 90
+healthcheck_mem_warn: 80
+healthcheck_mem_crit: 90
+healthcheck_load_warn: 70
+healthcheck_load_crit: 100
+
+# Services that must be running
+healthcheck_services:
+  - ssh
+  - ufw
+  - fail2ban
