@@ -1,3 +1,4 @@
+---
 all:
   children:
     baseline: # name of the group
