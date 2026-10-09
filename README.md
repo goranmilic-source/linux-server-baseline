@@ -1,3 +1,5 @@
+
+![lint](https://github.com/goranmilic-source/linux-server-baseline/actions/workflows/lint.yml/badge.svg)
 # DevOps Repo Template
 ### A place to start fresh
 
