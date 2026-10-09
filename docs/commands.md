@@ -6,7 +6,7 @@
     cmd:  for r in base users ssh firewall fail2ban healthcheck; do ansible-galaxy role init "$r"; done
 
 
-## ansible.cfg
+## Outline of ansible.cfg
 Sets the defaults for the ansible environment
     [defaults]
     inventory = inventory/hosts.yaml
@@ -36,6 +36,14 @@ Sets the defaults for the ansible environment
         - vars
             --
 
+## This line runs any handlers right now.
+- name: Apply systemd changes before enabling the timer
+  ansible.builtin.meta: flush_handlers
+
+## Analyze a service.
+Especially if you are troubleshooting it or it is your service
+    cmd: systemd-analyze verify /etc/systemd/system/healthcheck.timer
+
 ## Remove a ufw firewall rule
     cmd: ansible <host-name> -m community.general.ufw -a "rule=allow port=8080 proto=tcp delete=true" --become -K
 
@@ -52,8 +60,9 @@ Sets the defaults for the ansible environment
 ## Send a command, "uptime", or any other command to all systems in the "baseline" group.
     cmd: ansible baseling -m command -a "uptime"
 
-## -m = MODULE_NAME
-## -M = MODULE_PATH
+    -m = MODULE_NAME
+    -M = MODULE_PATH
+
 ## To list all installed modules that are supported by -m run:
     cmd: ansible-doc -l
 
@@ -73,6 +82,22 @@ playbook: site.yaml = All is well.
 
 ## SSH Copy the key to the remote system (Linux only)
     cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
+
+## Shows failed services
+    cmd: systemctl --failed
+
+## Shows the calendar and when the next task will run based on the given numbers
+    cmd: systemd-analyze calendar "*:0/5"
+
+## When changing config files/timers, you have to reload the systemd-daemon.
+    cmd: systemctl daemon-reload
+
+## Display times in sysdemctl:
+    cmd: systemctl list-timers --all
+
+
+
+
 
 
 # Fail2Ban

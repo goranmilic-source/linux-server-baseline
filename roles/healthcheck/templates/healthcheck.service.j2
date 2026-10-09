@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Server health check (disk, memory, load, services)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/healthcheck.sh
+Environment="DISK_WARN={{ healthcheck_disk_warn }}"
+Environment="DISK_CRIT={{ healthcheck_disk_crit }}"
+Environment="MEM_WARN={{ healthcheck_mem_warn }}"
+Environment="MEM_CRIT={{ healthcheck_mem_crit }}"
+Environment="LOAD_WARN={{ healthcheck_load_warn }}"
+Environment="LOAD_CRIT={{ healthcheck_load_crit }}"
+Environment="SERVICES={{ healthcheck_services | join(' ') }}"

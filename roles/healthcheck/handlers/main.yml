@@ -1,3 +1,9 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# handlers file for healthcheck
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Restart healthcheck timer
+  ansible.builtin.systemd_service:
+    name: healthcheck.timer
+    state: restarted
