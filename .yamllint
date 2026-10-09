@@ -1,0 +1,25 @@
+---
+# extends: default starts from yamllint’s standard rules and changes only what’s listed.
+extends: default
+
+rules:
+  # Allow comments one space after code, like "# gitleaks:allow"
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: false
+  # Allow "{{ var }}" with spaces inside the braces
+  braces:
+    max-spaces-inside: 1
+  # Long lines are a warning, not an error
+  line-length:
+    max: 160
+    level: warning
+  # Only true/false as booleans (no yes/no/on/off); don't flag the GitHub key "on:"
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  # check-keys: false is needed because GitHub workflows start with a key named on:, which would otherwise be flagged.
+  # File modes must be quoted strings, like "0644"
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true

@@ -16,8 +16,10 @@ up: ## Start the stack in the background
 down: ## Stop the stack
 	$(COMPOSE) down
 
-lint: ## Check code style
-	$(COMPOSE) exec $(SERVICE) ruff check .
+lint: ## Run all linters (same command CI runs)
+	yamllint .
+	ansible-lint
+	shellcheck roles/*/files/*.sh
 
 test: ## Run tests with Pytest
 	$(COMPOSE) exec $(SERVICE) pytest -q

@@ -1,3 +1,4 @@
+---
 - name: Linux server baseline
   hosts: baseline
   become: true

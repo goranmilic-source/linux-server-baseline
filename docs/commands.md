@@ -63,6 +63,39 @@ Especially if you are troubleshooting it or it is your service
     -m = MODULE_NAME
     -M = MODULE_PATH
 
+# Set up ansible virtual directory
+    pipx install yamllint
+    pipx install ansible-lint
+    yamllint --version
+    ansible-lint --version
+    shellcheck --version (this is an OS level app.)
+
+
+The lint file configuration is stored in the following file located in the root dir:
+    .yamllint
+
+Create the following file and add a profile to it to enforce strictness level. Also create in root dir:
+    .ansible-ling
+
+        ---
+        profile: production
+Ansible-lint finds your roles, playbook and ansible.cfg by itself.
+
+
+## Ansible Galaxy
+Ansible Galaxy is a free, open-source repository and command-line tool used for finding, downloading, and sharing reusable automation content for Ansible.  It serves as a central hub where the community and vendors distribute pre-packaged automation units known as roles and collections, allowing users to jump-start projects without writing code from scratch
+
+    cmd: ansible-galaxy collection install -r requirements.yml
+
+requirements.yaml:
+    ---
+    collections:
+    - name: community.general
+    - name: ansible.posix
+
+Installs the outlined roles into the ansible virtual directory
+
+
 ## To list all installed modules that are supported by -m run:
     cmd: ansible-doc -l
 
@@ -106,7 +139,10 @@ playbook: site.yaml = All is well.
     -f force rotate even if it is not due.
     -v verbose
 
-
+# Linting
+    1. yamllint checks every YAML file for formatting mistakes
+    2. ansible-lint checks your playbook and roles for errors and bad practices
+    3. shellcheck checks your Bash script
 
 
 
@@ -156,6 +192,16 @@ So if the script itself breaks, it exits with 3 (UNKNOWN) instead of a misleadin
     cmd: shellcheck roles/healthcheck/files/healthcheck.sh
         shellcheck looks for bugs and risky patterns.
 
+
+# Local and Remote CI.
+## Workflows
+Github workflows are located in the project under
+    cmd: .github/workflows/ci.yaml
+
+The workflows are defined there and are applied in GitHub when time comes for merging code to the main branch.
+Idealy, you would have all the CI tools installed locally.
+They would run against your code before it is allowed to be uploaded to the branch.
+When all the local red-flags are green, your code can be uploaded to the branch.
 
 # GM Notes
     A noteworthy pattern is that: Whenever you have to owerwrive a configuration file from a third party software you would use the "templates" folder and Jinja2 Tamplating.

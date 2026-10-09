@@ -33,7 +33,6 @@
     label: "{{ item.port }}/{{ item.proto | default('tcp') }}"
 
 
-
 - name: Deny all incoming by default
   community.general.ufw:
     default: deny
