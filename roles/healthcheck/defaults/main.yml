@@ -15,3 +15,10 @@ healthcheck_services:
   - ssh
   - ufw
   - fail2ban
+
+# Log file the health check writes to (used by the service and by logrotate)
+healthcheck_log_file: /var/log/healthcheck.log
+
+# Log rotation: how often (daily, weekly, monthly) and how many old copies to keep
+healthcheck_logrotate_frequency: weekly
+healthcheck_logrotate_keep: 4

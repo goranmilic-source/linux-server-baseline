@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+{{ healthcheck_log_file }} {
+    {{ healthcheck_logrotate_frequency }}
+    rotate {{ healthcheck_logrotate_keep }}
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root adm
+    su root adm
+}

@@ -95,6 +95,16 @@ playbook: site.yaml = All is well.
 ## Display times in sysdemctl:
     cmd: systemctl list-timers --all
 
+## Logrotate
+    /etc/logrotate.d/<put_instructions_here>
+
+    Do a dry run of what log rotation will be performed.
+        cmd: sudo logrotate -d /etc/logrotate.d/<template>
+        cmd: sudo logrotate -f -v /etc/logrotate.d/<template>
+
+    -d debug mode
+    -f force rotate even if it is not due.
+    -v verbose
 
 
 
