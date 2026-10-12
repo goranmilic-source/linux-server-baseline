@@ -1,30 +1,87 @@
-# Entry 1:
-## SSH Keys
-Adding SSH_keys into any file will be flagged by the pre-commit and git leaks scan.
-The scan is tripped by the "SSH_KEY" values in the config files.
+# Incident and troubleshooting log
 
-### Bypass
-Add the # gitleaks:allow to the line that should be ommited.
-WARNING: this is not to be used to bypass security. Instead, it is to rectify false positives such as the case above.
+A record of any problems that came across while building this project. Records are kept here
+in the structured invident log. The long format should be short, concise, but with enough details not to be vague. Root cause is very imporant along with the fix and prevention.
 
 
-# Entry 2:
-## Ansible Firewall Port Management
-If you are managing ports with Ansible by adding ports to the defaults-->main.yaml it will add those ports to the "ufw" on the target machinges.
+## Index
 
-HOWEVER
+| ID | Section | Title | Type |
+|----|---------|-------|------|
+| 001 | DEV   | Pre-commit failing due the SSH keys | DevOps environment |
+| 002 | DEV   | Ansible not removing ports | DevOps environment |
+| 003 | DEV   | fail2ban banned IPs but didn't block them | DevOps environment |
+---
 
-If you REMOVE ports from the defaults-->main.yaml file, the ports on the target machine WILL NOT be removed. They will stil be presetn in the ufw config file.
+## Format to be used:
 
-You have to MANUALLY close ports on the target hosts.
-This is something that should be scripted to happen automatically. Can it be done with a handler?
+00X · Descriptive title of incident
 
-Check the commands section for the Ansible command which will remove the port.
+**Section:** Where did this happen? · **Type:** (prod, client, internal, dev, qa, etc)
 
-I have added a "remove section" that will run after the add rule removin all unnecessary ports. This ensures that no lingering, unused, ports remain.
+**Symptom:** What happened?
+**Impact:** What does is affect?
+**Diagnosis:** How did this happen?
+**Root cause:** Why did this happen in the first place?
+**Fix:** How do we get it back to functional.
+**Prevention:** How do we prevent it from happening in the future.
 
 
-# Entry 3:
-## Fail2Ban
-If you have any changes to the configuration files, such as lines added or removed to the files, simply RELOADING the service does not pick up those new changes.
-Instead, you have to RESTART the service for the files to be re-read and applied.
+## 001 · Pre-commit failing due the SSH keys
+
+**Section:** Staging server · **Type:** DevOps environment
+
+**Symptom:** The Pre-commit that that checks the code found variable with the name SSH_KEY.
+
+**Impact:** The code is unable to be uploaded to the Git repository unless it passes the pre-check and gitleaks.
+
+**Diagnosis:** A descriptive variable was used with the name SSH_KEY. The variable itself did not contain the key. It did contain a path to where they key was securely stored. The Pre-Commit saw this keyword repeaded three times, as three users were being created, and flagged it as a security issue.
+
+**Root cause:** Pre-commit security feature.
+
+**Fix:** Verified that no key information was stored in the variable and that this reporting was a false possitive. Added the "Ignore" to these variables as they were created securely.
+
+**Prevention:** Use variables with a different name to avoid being flagged in the future.
+
+
+## 002 · Ansible not removing ports
+**Section:** Dev Server   · **Type:** DevOps Environment
+
+**Symptom:** The ansible "Firewall" role would run and add ports to the servers firewall. However, if ports are REMOVED from the ansible configuration, they would not be removed from the server.
+
+**Impact:** This can give you a false sense of security as you would think that the ports were closed, but in reality they were not.
+
+**Diagnosis:** The ansible script must be updated to remedy this issue.
+
+**Root cause:** Ansible script configuration.
+
+**Fix:** Manually remove ports. However, this creates drift.
+
+**Prevention:** Updated the ansible "firewall" role to also remove any ports that are unused.
+
+
+## 003 · fail2ban banned IPs but didn't block them
+
+**Section:** Dev Server · **Type:** DevOps Environment
+
+**Symptom:** `fail2ban-client status sshd` listed ubuntu-dev as banned, but
+ubuntu-dev could still connect. No ban rule appeared in `ufw status`.
+
+**Impact:** Brute-force protection was silently ineffective: bans were
+recorded but never enforced.
+
+**Diagnosis:** Separated detection (working) from enforcement (not working).
+`fail2ban-client get sshd actions` returned "No actions for jail sshd".
+Reading `/var/log/fail2ban.log` as a timeline showed the handler's reload
+flushed the old nftables action, with no line showing the new ufw action
+being loaded.
+
+**Root cause:** A `reload` doesn't reliably apply a change of ban action.
+The jail was left with no action at all, and no error was logged because
+the new action was never attempted.
+
+**Fix:** Changed the role's handler from `reloaded` to `restarted`.
+Verified with a real ban test: banned, refused, unbanned, reconnected.
+
+**Prevention:** After config changes, compare what is configured with what is
+actually loaded (`fail2ban-client get <jail> actions`).
