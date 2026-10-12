@@ -29,3 +29,6 @@ check: ## Runs the pre-commit checks for astethics and git leaks.
 
 deploy: ## Runs the Ansible playbook that checks the availability of servers.
 	ansible-playbook site.yaml -K
+
+verify: ## Runs the verify-idempotency script
+	./scripts/verify-idempotency.sh -K
