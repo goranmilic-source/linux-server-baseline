@@ -25,7 +25,7 @@ flowchart LR
     gh["GitHub Actions<br/>lint gate on every PR"]
     dev -- "git push / pull request" --> gh
     dev -- "SSH, key only" --> host
-    subgraph host["ubuntu-host · managed node"]
+    subgraph host["ubuntu-host · managed node(s)"]
         direction TB
         base["base"] --> users["users"] --> ssh["ssh"] --> fw["firewall"] --> f2b["fail2ban"] --> hc["healthcheck"]
     end
@@ -36,10 +36,10 @@ disabled, and SSH is allowed before the firewall turns on.
 
 ## Design principles
 
-- **Everything in code.** No manual changes on the server; drift is corrected by re-running the playbook.
+- **Everything in code.** No manual changes on the server; drift is corrected by re-running the playbook. People who cause drift are given a stern talking to!
 - **Idempotent.** A second run reports `changed=0`, checked automatically by `make verify`.
-- **Safe by default.** Risky config files are validated before they are installed.
-- **Reviewed changes.** `main` is protected; every change goes through a pull request and a required lint check.
+- **Safe by default.** Risky config files are validated before they are installed using pre-commit and gitleaks to catch any security issues.
+- **Reviewed changes.** `main` is protected; every change goes through a pull request and a required lint check. Only the braves developers commit directly to main.
 - **Verified, not assumed.** Every role was tested by breaking it on purpose (see the incident log).
 
 ## Requirements
@@ -104,7 +104,7 @@ Every setting is a variable in a role's `defaults/main.yml`. Examples:
 | `firewall_allowed_ports` | `[]` | Extra ports to open |
 | `firewall_removed_ports` | `[]` | Ports to close explicitly |
 | `fail2ban_bantime` | `10m` | How long a ban lasts |
-| `healthcheck_schedule` | `*:0/5` | When the health check runs |
+| `healthcheck_schedule` | `*:0/5` | When the health check runs (every 5 minutes) |
 
 Override a value for one run with `-e`, for example:
 `ansible-playbook site.yml -K -e healthcheck_disk_warn=70`
@@ -144,9 +144,21 @@ site.yml             Main playbook
 - [Decision records](docs/decisions/): why the project is built the way it is
 - [Incident log](docs/troubleshooting.md): problems hit while building it, and how they were solved
 
-## What I learned
+## Operational notes
 
-<!-- Your own words. See Step 4. -->
+- **sshd uses the first value it reads; fail2ban uses the last.** The SSH
+  hardening drop-in is named `01-hardening.conf` so it is read before any
+  distribution file (such as `50-cloud-init.conf`) that might re-enable passwords.
+- **A fail2ban `reload` does not reliably apply a change of ban action.**
+  The role's handler restarts the service; bans persist across restarts.
+- **Removing an item from a list does not undo it.** Ports and users are
+  closed or removed by declaring it (`firewall_removed_ports`, `state: absent`),
+  never by deleting them from the list.
+- **The firewall is never reset as part of a routine run.** A reset fails open
+  if a later task errors; see [ADR 0002](docs/decisions/).
+- **`--check` cannot fully preview this playbook on a fresh server.** Tasks
+  that depend on users or units created earlier in the same run report
+  errors in check mode only.
 
 ## License
 
