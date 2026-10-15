@@ -4,6 +4,16 @@
     name: "{{ users_admin_group }}"
     state: present
 
+- name: Remove user and home directory
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: true
+    force: true
+  loop: "{{ users_remove }}"
+  loop_control:
+    label: "{{ item.name }}"
+
 - name: Create admin users
   ansible.builtin.user:
     name: "{{ item.name }}"
@@ -16,6 +26,7 @@
   loop: "{{ users_admins }}"
   loop_control:
     label: "{{ item.name }}"
+
 
 - name: Install SSH Keys for admin users
   ansible.posix.authorized_key:

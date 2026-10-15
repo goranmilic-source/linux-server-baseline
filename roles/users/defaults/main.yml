@@ -15,3 +15,8 @@ users_admins:
   - name: steve
     comment: "Steve is a good guy."
     ssh_key: steve_ed25519.pub # gitleaks:allow
+
+# COPY / PASTE below the "- name: <username>" from above to remove the: user, their home_dir, their mail_spool
+# and force user logout.
+users_remove:
+  - name: []
