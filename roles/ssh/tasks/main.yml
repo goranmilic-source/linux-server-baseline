@@ -4,6 +4,20 @@
     name: openssh-server
     state: present
 
+- name: Ensure ssh is enabled and running
+  ansible.builtin.service:
+    name: ssh
+    state: started
+    enabled: true
+
+- name: Checking for privilage seperation directory /run/ssh
+  ansible.builtin.file:
+    path: /run/sshd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Install SSH hardening config
   ansible.builtin.template:
     src: 01-hardening.conf.j2
