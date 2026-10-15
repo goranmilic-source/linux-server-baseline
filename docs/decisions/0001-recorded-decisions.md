@@ -1,4 +1,4 @@
-## Initial Design
+# Initial Design
 All deployed servers should have the same base configuration that adheres to auditable standards of 27001 and 9001.
 This is the minimum required for the aforementioned standards. Check the docs/0001-upgrade-proposals.md to see future upgrades.
 
