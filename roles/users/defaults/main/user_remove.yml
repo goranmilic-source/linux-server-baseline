@@ -1,0 +1,9 @@
+---
+# COPY / PASTE below the "- name: <username>" from user_add.yml to remove the: user,
+# their home_dir, their mail_spool and force user logout.
+
+# IMPORTANT NOTE: Do not keep users here. Once the user is removed, delete them from this section.
+# If you keep users here the "/scripts/gen_user_ssh_keys.sh script" will creaet a key for them.
+
+users_remove:
+  - name: []

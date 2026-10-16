@@ -18,8 +18,8 @@ lint: ## Run all linters (same command CI runs)
 test: ## Run tests with Pytest
 	$(COMPOSE) exec $(SERVICE) pytest -q
 
-ssh_keys: ## Creates the SSH keys based on the users from the /roles/users/defaults/main.yml file
-	./scripts/gen_user_ssh_keys.sh
+user_add: ## Creates the users and their SSH keys. Adds the user_add.yml fil to roles/users/defaults/main/
+	./scripts/user_add.sh
 
 check: ## Runs the pre-commit checks for astethics and git leaks.
 	pre-commit run --all-files
