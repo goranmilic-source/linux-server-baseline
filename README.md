@@ -46,41 +46,67 @@ disabled, and SSH is allowed before the firewall turns on.
 
 **Control node** (where you run Ansible): Linux with Python 3, `pipx`, `make` and `git`.
 
-**Managed node** (the server/management server): Ubuntu, reachable over SSH, with a user that has sudo rights.
+**Managed node** (the server/management server): Ubuntu, reachable over SSH, with a user that has sudo rights. Update the [ansible.cfg](ansible.cfg) file with the user and ssh key that Ansible will be using to connect to the managed servers.
+
 
 ## Quick start
 
-1. **Clone the repo and install Ansible with its collections:**
+**1. Clone the repo and install Ansible with its collections:**
 ```bash
-   git clone https://github.com/goranmilic/linux-server-baseline.git
+   git clone git@github.com:goranmilic-source/linux-server-baseline.git
    cd linux-server-baseline
    pipx install --include-deps ansible
    ansible-galaxy collection install -r requirements.yml
 ```
-TEST THIS ----------------------------------------------------------------------------------------------------
-2. **Create an SSH key for Ansible and copy it to the server(s):**
+
+**2. Create an SSH key for Ansible and copy it to the server(s):**
 ```bash
    ssh-keygen -t ed25519 -f ~/.ssh/ansible_ed25519 -C "ansible@control"
    ssh-copy-id -i ~/.ssh/ansible_ed25519.pub <user>@<server(s)>
 ```
-Place the **PUBLIC** keys in the /roles/users/files folder. They will copied over when make deploy is run.
+Update the ansible.cfg file to use the ansible admin's private key:
+   ansible.cfg: private_key_file = ~/.ssh/ansible_ed25519
 
 
-3. **Replace the admin public key with your own.** The key in the repo is the
-   author's (cool guy, so I hear). Running the playbook unchanged would give the author access to your server (only if he finds you).
+**3. Creating users, admin users, user-ssh keys, and admin group(s).**
+
+**Option 1 - Manual user setup**
+
+Users, groups, and keys can all be created manually as you see fit.
+The files used for user and group creation/removal are:
+* user_add.yml
+* user_groups.yml
+* user_remove.yml
+
+The aforementioned files are located in: [users](roles/users/defaults/main)
+If you are removing users, make sure you also remove them from the "user_add.yml" file.
+Copy the user PUBLIC ssh keys to the [files](roles/users/files) folder.
+
+**Option 2 - Automatic user setup.**
+
+Add the usernames (one per line) to the [user_add.conf](user_add.conf) file.
+The script /scripts/user_add.sh can be run with
 ```bash
-   cp ~/.ssh/ansible_ed25519.pub roles/users/files/opsadmin.pub
+   make user_add
 ```
-TEST THIS ----------------------------------------------------------------------------------------------------
+The script will:
+   * Create all users specified in the user_add.conf file.
+   * Create a folder called ssh_secrets which stores the PRIVATE and PUBLIC keys (keep your private keys safe!)
+   * Create SSH keys preceded with the user's name.
+   * Create a user_add.yml file and replace the default one located in [main](roles/users/defaults/main) folder.
+   * Copy the PUBLIC SSH keys to [files](roles/users/files) folder.
 
-4. **Point the inventory at your server.** Edit `inventory/hosts.yml`: set
-   `ansible_host` to your server's name or IP, and `ansible_user` to your login user.
-   If, for some very good reason, you are not using DNS, edit your local /etc/hosts file and manually enter in your server's IP and name.
-   OR, just use the IP address in your inventory/hosts.yml file.
+
+**4. Point the inventory at your server.**
+
+Edit `inventory/hosts.yml`: set `ansible_host` to your server's name or IP, and `ansible_user` to your login user.
+If, for some very good reason, you are not using DNS, edit your local /etc/hosts file and manually enter in your server's IP and name.
+OR, just use the IP address in your inventory/hosts.yml file.
 
 
-5. **Apply the baseline and verify it:**
+**5. Apply the baseline and verify it:**
 ```bash
+
    make deploy    # asks for your sudo password
    make verify    # applies twice; fails if the second run changes anything
 ```
@@ -93,6 +119,7 @@ TEST THIS ----------------------------------------------------------------------
 | `make deploy` | Apply the full baseline |
 | `make verify` | Apply twice and fail unless the second run reports `changed=0` |
 | `make lint` | Run yamllint, ansible-lint (production profile) and shellcheck, the same as CI |
+| `make user_add` | Optional - Creates users and groups specified in the user_add.conf |
 
 ## Configuration
 
@@ -132,9 +159,9 @@ docs/decisions/      Architecture decision records
 docs/troubleshooting.md   Incident log (real and staged incidents)
 inventory/hosts.yml  Target servers
 roles/               base, users, ssh, firewall, fail2ban, healthcheck
-scripts/             verify-idempotency.sh
+scripts/             verify-idempotency.sh, user_add.sh
 ansible.cfg          Ansible settings for this project
-Makefile             deploy, verify, lint
+Makefile             deploy, verify, lint, user_add
 requirements.yml     Ansible collections needed
 site.yml             Main playbook
 ```
