@@ -1,0 +1,3 @@
+---
+# Group that receives the sudo rights
+users_admin_group: opsadmins

@@ -10,12 +10,6 @@ help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | \
 	awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-up: ## Start the stack in the background
-	$(COMPOSE) up -d
-
-down: ## Stop the stack
-	$(COMPOSE) down
-
 lint: ## Run all linters (same command CI runs)
 	yamllint .
 	ansible-lint
@@ -23,6 +17,9 @@ lint: ## Run all linters (same command CI runs)
 
 test: ## Run tests with Pytest
 	$(COMPOSE) exec $(SERVICE) pytest -q
+
+user_add: ## Creates the users and their SSH keys. Adds the user_add.yml fil to roles/users/defaults/main/
+	./scripts/user_add.sh
 
 check: ## Runs the pre-commit checks for astethics and git leaks.
 	pre-commit run --all-files
@@ -32,3 +29,9 @@ deploy: ## Runs the Ansible playbook that checks the availability of servers.
 
 verify: ## Runs the verify-idempotency script
 	./scripts/verify-idempotency.sh -K
+
+up: ## Start the stack in the background
+	$(COMPOSE) up -d
+
+down: ## Stop the stack
+	$(COMPOSE) down

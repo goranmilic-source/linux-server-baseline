@@ -17,7 +17,7 @@
 - name: Create admin users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    comment: "{{ item.comment }}"
+    # comment: "{{ item.comment }}"
     shell: /bin/bash
     groups: "{{ users_admin_group }}"
     append: true  # appends the group to the user. Without this it will replace all groups with this one.
@@ -26,7 +26,6 @@
   loop: "{{ users_admins }}"
   loop_control:
     label: "{{ item.name }}"
-
 
 - name: Install SSH Keys for admin users
   ansible.posix.authorized_key:
