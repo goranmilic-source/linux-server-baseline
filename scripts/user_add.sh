@@ -14,6 +14,12 @@ PUB_KEY_DIR="${4:-./roles/users/files/}"
 mkdir -p "$KEYS_DIR" "$(dirname "$OUT_FILE")"
 chmod 700 "$KEYS_DIR"
 
+if [ ! -d "$PUB_KEY_DIR" ]; then
+  mkdir -p "$PUB_KEY_DIR"
+else
+  echo "Key directory already exists."
+fi
+
 # Reads the users_add.conf file. Creates the ssh keys and puts them in the directory specified above.
 # Outputs everything to a .yml file located in "./roles/users/defaults/main/user_add.yml"
 # Copies the PUBLIC files to "./roles/users/files/"

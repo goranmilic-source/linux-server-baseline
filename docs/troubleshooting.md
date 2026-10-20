@@ -106,7 +106,23 @@ actually loaded (`fail2ban-client get <jail> actions`).
 2. Check if the sshd service is enabled and running.
 3. Updated the /roles/ssh/handlers/main.yml file "Reload ssh - state" from reload to restart
 
-
-
-
 Resolution: Added a line to the end of the installation command to start the service.
+
+
+
+
+# 005 Empty directories need to be re-created
+
+**Section:** Managed Server - **Type:** DevOps Environment
+
+**Symptom:** Git does not upload/keep empty directories.
+
+**Impact:** Any script relying on the roles/users/files directory will fail.
+
+**Diagnosis:** The user_add.sh script terminated with an error due to the missing folder. Investigation confirmed that the code in GitHub does not contain the empty folder. Therefore, the pulled code is also missing the folder.
+
+**Root cause:** Git file tracking design. Git does this intentionally and is part of their design.
+
+**Fix:** Added a section in the script to check if the folder exists. If not, the folder will be created before files are copied to it.
+
+**Prevention:** Any empty folders will not contain a .gitkeep file as a placeholder for that folder.
