@@ -40,10 +40,6 @@ Sets the defaults for the ansible environment
 - name: Apply systemd changes before enabling the timer
   ansible.builtin.meta: flush_handlers
 
-## Analyze a service.
-Especially if you are troubleshooting it or it is your service
-    cmd: systemd-analyze verify /etc/systemd/system/healthcheck.timer
-
 ## Remove a ufw firewall rule
     cmd: ansible <host-name> -m community.general.ufw -a "rule=allow port=8080 proto=tcp delete=true" --become -K
 
@@ -75,7 +71,7 @@ The lint file configuration is stored in the following file located in the root 
     .yamllint
 
 Create the following file and add a profile to it to enforce strictness level. Also create in root dir:
-    .ansible-ling
+    .ansible-lint
 
         ---
         profile: production
@@ -114,7 +110,7 @@ playbook: site.yaml = All is well.
     cmd: ssh-keygen -t ed25519 -C "<some@user.name>" -f ~/.ssh/<key_output_name>
 
 ## SSH Copy the key to the remote system (Linux only)
-    cmd: ssh-copy-id -i <key_name>.pub <username>@<host_name_or_ip>
+    cmd: ssh-copy-id -i <key_name> <username>@<host_name_or_ip>
 
 ## Shows failed services
     cmd: systemctl --failed
@@ -127,6 +123,11 @@ playbook: site.yaml = All is well.
 
 ## Display times in sysdemctl:
     cmd: systemctl list-timers --all
+
+## Analyze a service.
+Especially if you are troubleshooting it or it is your service
+    cmd: systemd-analyze verify /etc/systemd/system/healthcheck.timer
+
 
 ## Logrotate
     /etc/logrotate.d/<put_instructions_here>
@@ -143,7 +144,6 @@ playbook: site.yaml = All is well.
     1. yamllint checks every YAML file for formatting mistakes
     2. ansible-lint checks your playbook and roles for errors and bad practices
     3. shellcheck checks your Bash script
-
 
 
 # Fail2Ban
@@ -204,6 +204,6 @@ They would run against your code before it is allowed to be uploaded to the bran
 When all the local red-flags are green, your code can be uploaded to the branch.
 
 # GM Notes
-    A noteworthy pattern is that: Whenever you have to owerwrive a configuration file from a third party software you would use the "templates" folder and Jinja2 Tamplating.
+    A noteworthy pattern is that: Whenever you have to overwrite a configuration file from a third party software you would use the "templates" folder and Jinja2 Tamplating.
 
     Look into how accurate the above really is.
