@@ -62,7 +62,7 @@ disabled, and SSH is allowed before the firewall turns on.
 **2. Create an SSH key for Ansible and copy it to the server(s):**
 ```bash
    ssh-keygen -t ed25519 -f ~/.ssh/ansible_ed25519 -C "ansible@control"
-   ssh-copy-id -i ~/.ssh/ansible_ed25519.pub <user>@<server(s)>
+   ssh-copy-id -i ~/.ssh/ansible_ed25519 <user>@<server(s)>
 ```
 Update the ansible.cfg file to use the ansible admin's private key:
    ansible.cfg: private_key_file = ~/.ssh/ansible_ed25519

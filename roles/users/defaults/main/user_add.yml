@@ -1,6 +1,4 @@
 ---
-# List of admin users to be created on all servers that are managed by Ansible
-
 users_admins:
   - name:
     ssh_key:
